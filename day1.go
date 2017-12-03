@@ -27,7 +27,7 @@ func solve(stepSize int) int {
 
   var total int = 0
   for i := 0; i < strLen; i++ {
-    curr := string(input[i % strLen])
+    curr := string(input[i])
     next := string(input[(i + stepSize) % strLen])
 
     if (curr == next) {
