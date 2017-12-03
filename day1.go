@@ -13,26 +13,26 @@ func main() {
 }
 
 func problemOne() {
-  total := solve(int16(1))
+  total := solve(1)
   fmt.Printf("Problem One Result: %d\n", total)
 }
 
 func problemTwo() {
-  total := solve(int16(len(input) / 2))
+  total := solve(len(input) / 2)
   fmt.Printf("Problem Two Result: %d\n", total)
 }
 
-func solve(stepSize int16) int16 {
-  strLen := int16(len(input))
+func solve(stepSize int) int {
+  strLen := len(input)
 
-  var total int16 = 0
-  for i := int16(0); i < strLen; i++ {
+  var total int = 0
+  for i := 0; i < strLen; i++ {
     curr := string(input[i % strLen])
     next := string(input[(i + stepSize) % strLen])
 
     if (curr == next) {
-      num, _ := strconv.ParseInt(curr, 10, 16)
-      total += int16(num)
+      num, _ := strconv.Atoi(curr)
+      total += num
     }
   }
   return total
