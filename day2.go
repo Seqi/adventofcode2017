@@ -1,92 +1,92 @@
 package main
 
 import (
-  "fmt"
-  "strings"
-  "strconv"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
-const input string = `116	1259	1045	679	1334	157	277	1217	218	641	1089	136	247	1195	239	834
-269	1751	732	3016	260	6440	5773	4677	306	230	6928	7182	231	2942	2738	3617
-644	128	89	361	530	97	35	604	535	297	599	121	567	106	114	480
-105	408	120	363	430	102	137	283	123	258	19	101	181	477	463	279
-873	116	840	105	285	238	540	22	117	125	699	953	920	106	113	259
-3695	161	186	2188	3611	2802	157	2154	3394	145	2725	1327	3741	2493	3607	4041
-140	1401	110	119	112	1586	125	937	1469	1015	879	1798	122	1151	100	926
-2401	191	219	607	267	2362	932	2283	889	2567	2171	2409	1078	2247	2441	245
-928	1142	957	1155	922	1039	452	285	467	305	506	221	281	59	667	232
-3882	1698	170	5796	2557	173	1228	4630	174	3508	5629	4395	180	5100	2814	2247
-396	311	223	227	340	313	355	469	229	162	107	76	363	132	453	161
-627	1331	1143	1572	966	388	198	2068	201	239	176	1805	1506	1890	1980	1887
-3390	5336	1730	4072	5342	216	3823	85	5408	5774	247	5308	232	256	5214	787
-176	1694	1787	1586	3798	4243	157	4224	3603	2121	3733	851	2493	4136	148	153
-2432	4030	3397	4032	3952	2727	157	3284	3450	3229	4169	3471	4255	155	127	186
-919	615	335	816	138	97	881	790	855	89	451	789	423	108	95	116`
+const input string = `790	99	345	1080	32	143	1085	984	553	98	123	97	197	886	125	947
+302	463	59	58	55	87	508	54	472	63	469	419	424	331	337	72
+899	962	77	1127	62	530	78	880	129	1014	93	148	239	288	357	424
+2417	2755	254	3886	5336	3655	5798	3273	5016	178	270	6511	223	5391	1342	2377
+68	3002	3307	166	275	1989	1611	364	157	144	3771	1267	3188	3149	156	3454
+1088	1261	21	1063	1173	278	1164	207	237	1230	1185	431	232	660	195	1246
+49	1100	136	1491	647	1486	112	1278	53	1564	1147	1068	809	1638	138	117
+158	3216	1972	2646	3181	785	2937	365	611	1977	1199	2972	201	2432	186	160
+244	86	61	38	58	71	243	52	245	264	209	265	308	80	126	129
+1317	792	74	111	1721	252	1082	1881	1349	94	891	1458	331	1691	89	1724
+3798	202	3140	3468	1486	2073	3872	3190	3481	3760	2876	182	2772	226	3753	188
+2272	6876	6759	218	272	4095	4712	6244	4889	2037	234	223	6858	3499	2358	439
+792	230	886	824	762	895	99	799	94	110	747	635	91	406	89	157
+2074	237	1668	1961	170	2292	2079	1371	1909	221	2039	1022	193	2195	1395	2123
+8447	203	1806	6777	278	2850	1232	6369	398	235	212	992	7520	7304	7852	520
+3928	107	3406	123	2111	2749	223	125	134	146	3875	1357	508	1534	4002	4417`
 
 func main() {
-  problemOne()
-  problemTwo()
+	problemOne()
+	problemTwo()
 }
 
 func problemOne() {
-  total := 0
+	total := 0
 
-  for _, row := range strings.Split(input, "\n") {
-    min, max := getMinMaxValueOfRow(row)
-    total += max - min
-  }
+	for _, row := range strings.Split(input, "\n") {
+		min, max := getMinMaxValueOfRow(row)
+		total += max - min
+	}
 
-  fmt.Printf("Problem One Result: %d\n", total)
+	fmt.Printf("Problem One Result: %d\n", total)
 }
 
 func problemTwo() {
-  total := 0
+	total := 0
 
-  for _, row := range strings.Split(input, "\n") {
-    result := getEvenDivisor(row)
-    total += result
-  }
+	for _, row := range strings.Split(input, "\n") {
+		result := getEvenDivisor(row)
+		total += result
+	}
 
-  fmt.Printf("Problem Two Result: %d\n", total)
+	fmt.Printf("Problem Two Result: %d\n", total)
 }
 
 func getMinMaxValueOfRow(row string) (int, int) {
-  min, max := 1<<63 - 1, 0
-  for _, num := range convertRowToInts(row){
-    if (num < min) {
-      min = num
-    }
-    if (num > max) {
-      max = num
-    }
-  }
+	min, max := 1<<63-1, 0
+	for _, num := range convertRowToInts(row) {
+		if num < min {
+			min = num
+		}
+		if num > max {
+			max = num
+		}
+	}
 
-  return min, max
+	return min, max
 }
 
 func getEvenDivisor(row string) int {
-  nums := convertRowToInts(row)
+	nums := convertRowToInts(row)
 
-  for nIdx:= 0; nIdx < len(nums); nIdx++ {
-    for dIdx := nIdx + 1; dIdx < nIdx + len(nums); dIdx++ {
-      if (nums[nIdx] % nums[dIdx % len(nums)] == 0) {
-        return nums[nIdx] / nums[dIdx % len(nums)]
-      }
-    }
-  }
+	for nIdx := 0; nIdx < len(nums); nIdx++ {
+		for dIdx := nIdx + 1; dIdx < nIdx+len(nums); dIdx++ {
+			if nums[nIdx]%nums[dIdx%len(nums)] == 0 {
+				return nums[nIdx] / nums[dIdx%len(nums)]
+			}
+		}
+	}
 
-  return 0
+	return 0
 }
 
 func convertRowToInts(row string) []int {
-  nums := make([]int, 0)
+	nums := make([]int, 0)
 
-  for _, value := range strings.Split(row, "\t") {
-    num, err := strconv.Atoi(value)
-    if (err == nil) {
-      nums = append(nums, num)
-    }
-  }
+	for _, value := range strings.Split(row, "\t") {
+		num, err := strconv.Atoi(value)
+		if err == nil {
+			nums = append(nums, num)
+		}
+	}
 
-  return nums
+	return nums
 }
