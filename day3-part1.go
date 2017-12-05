@@ -10,55 +10,16 @@ import (
 
 var input int
 
-var grid map[string]int
-var x, y, val int = 0, 0, 1
-
 func main() {
 	in, _ := strconv.Atoi(os.Args[1])
+
 	input = in
 	problemOne()
 }
 
 func problemOne() {
-	grid = make(map[string]int, 0)
-	sidelength := 1
 
-	set(x, y, val)
-
-	for val <= input {
-
-		// Right
-		for i := 1; i <= sidelength; i++ {
-			val += 1
-			x += 1
-			set(x, y, val)
-		}
-
-		// Up
-		for i := 1; i <= sidelength; i++ {
-			val += 1
-			y += 1
-			set(x, y, val)
-		}
-
-		sidelength += 1
-
-		// Left
-		for i := 1; i <= sidelength; i++ {
-			val += 1
-			x -= 1
-			set(x, y, val)
-		}
-
-		// Down
-		for i := 1; i <= sidelength; i++ {
-			val += 1
-			y -= 1
-			set(x, y, val)
-		}
-
-		sidelength += 1
-	}
+	grid := buildGrid()
 
 	for coords, val := range grid {
 		if val == input {
@@ -73,6 +34,37 @@ func problemOne() {
 	}
 }
 
-func set(x int, y int, val int) {
-	grid[strconv.Itoa(x)+", "+strconv.Itoa(y)] = val
+func buildGrid() map[string]int {
+	grid := make(map[string]int, 0)
+	x, y, val := 0, 0, 1
+	dir := 1
+	sidelength := 1
+
+	set := func(x int, y int, val int) {
+		grid[strconv.Itoa(x)+", "+strconv.Itoa(y)] = val
+	}
+
+	set(x, y, val)
+
+	for val <= input {
+		// X
+		for i := 1; i <= sidelength; i++ {
+			val += 1
+			x += dir
+			set(x, y, val)
+		}
+
+		// Y
+		for i := 1; i <= sidelength; i++ {
+			val += 1
+			y += dir
+			set(x, y, val)
+		}
+
+		sidelength += 1
+		x *= -1
+		y *= -1
+	}
+
+	return grid
 }
