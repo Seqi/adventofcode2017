@@ -73,10 +73,6 @@ func problemOne() {
 	}
 }
 
-func get(x int, y int) int {
-	return grid[strconv.Itoa(x)+", "+strconv.Itoa(y)]
-}
-
 func set(x int, y int, val int) {
 	grid[strconv.Itoa(x)+", "+strconv.Itoa(y)] = val
 }

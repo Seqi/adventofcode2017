@@ -8,7 +8,6 @@ import (
 
 var grid map[string]int
 var x, y, val int = 0, 0, 1
-var inputFound bool
 var input int
 
 func main() {
@@ -71,7 +70,6 @@ func calculatePoint(x int, y int) int {
 
 	// Lazy..
 	if val > input {
-		inputFound = true
 		fmt.Printf("Found %d", val)
 		os.Exit(0)
 	}
