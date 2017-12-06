@@ -7,7 +7,7 @@ import (
 )
 
 var input = `5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6`
-var banksHistory map[string]int
+var banksHistory []string
 
 func main() {
   problemOne()
@@ -15,19 +15,20 @@ func main() {
 
 func problemOne() {
   result := 0
-  banksHistory = make(map[string]int, 0)
+  banksHistory = make([]string, 0)
 
   // Create a container for the current state of the banks
   banks := parseInput()
+  banksHistory = append(banksHistory, banksToString(banks))
 
-  // Copy the initial value of banks into the bank state
+  // Copy the initial value of banks into the bank state ()
   var initialState = make([]int, len(banks))
   copy(initialState, banks)
   combinations := [][]int { initialState }
 
   for areCombinationsUnique() {
     banks = reallocate(banks)
-    banksHistory[banksToString(banks)] += 1
+    banksHistory = append(banksHistory, banksToString(banks))
 
     // Copy the new state into a bank state to preserve pointer
     var thisState = make([]int, len(banks))
@@ -37,12 +38,26 @@ func problemOne() {
     result += 1
   }
 
-  fmt.Printf("Problem One result: %d", result)
+  // Find the first result that matches the duplicate
+  dupeIndex, duplicate := 0, banksHistory[len(banksHistory) - 1]
+
+  for i, val := range banksHistory {
+    if (duplicate == val) {
+      dupeIndex = i
+      break
+    }
+  }
+
+  fmt.Printf("Problem One result: %d\n", result)
+  fmt.Printf("Problem Two result: %d\n", len(banksHistory) - (dupeIndex + 1))
 }
 
 func areCombinationsUnique() bool {
-  for _, val := range banksHistory {
-    if val > 1{
+  // Only need to search the last added
+  lastAddedCombination := banksHistory[len(banksHistory) - 1]
+
+  for i := 0; i < len(banksHistory) - 1; i++ {
+    if (lastAddedCombination == banksHistory[i]) {
       return false
     }
   }
