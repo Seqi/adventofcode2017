@@ -7,13 +7,15 @@ import (
 	"strings"
 )
 
+var inputs []Program
+
 func main() {
-	inputs := ParseInput()
-	bottomProgram := getBottomProgram(inputs)
+	inputs = ParseInput()
+	bottomProgram := getBottomProgram()
 
 	//weights := make([]int, len(bottomProgram.programs))
 
-	findFirstEqualTower(bottomProgram, inputs)
+	findFirstEqualTower(bottomProgram)
 
 	// for i, p := range bottomProgram.programs {
 	//   program := getProgram(p, inputs)
@@ -42,7 +44,7 @@ func main() {
 	// fmt.Println("Problem Two result: ", diff)
 }
 
-func findFirstEqualTower(program Program, input []Program) {
+func findFirstEqualTower(program Program) {
 
 	if len(program.programs) == 0 {
 		return
@@ -50,7 +52,7 @@ func findFirstEqualTower(program Program, input []Program) {
 
 	weights := make([]int, len(program.programs))
 	for i, p := range program.programs {
-		weight := calculateWeight(getProgram(p, input), input)
+		weight := calculateWeight(getProgram(p))
 		weights[i] = weight
 	}
 
@@ -62,7 +64,7 @@ func findFirstEqualTower(program Program, input []Program) {
 
 	if !isStackEven {
 		for _, p := range program.programs {
-			findFirstEqualTower(getProgram(p, input), input)
+			findFirstEqualTower(getProgram(p))
 		}
 	} else {
 		fmt.Println("This stack is even!", program)
@@ -83,22 +85,22 @@ func isStackEven(weights []int) bool {
 	return true
 }
 
-func calculateWeight(program Program, input []Program) int {
+func calculateWeight(program Program) int {
 	total := program.weight
 
 	if len(program.programs) > 0 {
 		for _, p := range program.programs {
-			next := getProgram(p, input)
-			total += calculateWeight(next, input)
+			next := getProgram(p)
+			total += calculateWeight(next)
 		}
 	}
 
 	return total
 }
 
-func getProgram(name string, input []Program) Program {
+func getProgram(name string) Program {
 	var result Program
-	for _, program := range input {
+	for _, program := range inputs {
 		if program.name == name {
 			result = program
 			break
@@ -108,7 +110,7 @@ func getProgram(name string, input []Program) Program {
 	return result
 }
 
-func getBottomProgram(inputs []Program) Program {
+func getBottomProgram() Program {
 	//  Find all programs that are owned by another program
 	children := make([]string, 0)
 	for _, program := range inputs {
