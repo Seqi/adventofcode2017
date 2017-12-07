@@ -1,64 +1,64 @@
 package main
 
 import (
-  "fmt"
-  "strings"
-  "strconv"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 func main() {
-  inputs := ParseInput()
+	inputs := ParseInput()
 
-  //  Find all programs that are owned by another program
-  children := make([]string, 0)
-  for _, program := range inputs {
-    children = append(children, program.programs...)
-  }
+	//  Find all programs that are owned by another program
+	children := make([]string, 0)
+	for _, program := range inputs {
+		children = append(children, program.programs...)
+	}
 
-  // The program that is not owned by another program must be the bottom
-  for _, program := range inputs {
-    hasMatch := false
-    for _, child := range children {
-      if (program.name == child) {
-        hasMatch = true
-      }
-    }
+	// The program that is not owned by another program must be the bottom
+	for _, program := range inputs {
+		hasMatch := false
+		for _, child := range children {
+			if program.name == child {
+				hasMatch = true
+			}
+		}
 
-    if (!hasMatch) {
-      fmt.Println("Problem One result: ", program.name)
-      break;
-    }
-  }
+		if !hasMatch {
+			fmt.Println("Problem One result: ", program.name)
+			break
+		}
+	}
 
 }
 
 func ParseInput() []Program {
-  lines := strings.Split(input, "\n")
-  result := make([]Program, len(lines))
+	lines := strings.Split(input, "\n")
+	result := make([]Program, len(lines))
 
-  for i, line := range lines {
-    words := strings.Split(line, " ")
-    weight, _ := strconv.Atoi(words[1][1:3])
+	for i, line := range lines {
+		words := strings.Split(line, " ")
+		weight, _ := strconv.Atoi(words[1][1:3])
 
-    program := new (Program)
-    program.name = words[0]
-    program.weight = weight
+		program := new(Program)
+		program.name = words[0]
+		program.weight = weight
 
-    if (len(words) > 2) {
-      // Trim the comma/spaces
-      program.programs = strings.Split(strings.Join(words[3:], ""), ",")
-    }
+		if len(words) > 2 {
+			// Trim the comma/spaces
+			program.programs = strings.Split(strings.Join(words[3:], ""), ",")
+		}
 
-    result[i] = *program
-  }
+		result[i] = *program
+	}
 
-  return result
+	return result
 }
 
 type Program struct {
-  name string
-  weight int
-  programs []string
+	name     string
+	weight   int
+	programs []string
 }
 
 var input string = `gbyvdfh (155) -> xqmnq, iyoqt, dimle
