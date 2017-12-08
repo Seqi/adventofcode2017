@@ -2,34 +2,27 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func main() {
 	in, _ := strconv.Atoi(os.Args[1])
 
 	grid := buildGrid(in)
-	x, y := find(in, grid)
-	fmt.Printf("Target found at %d, %d. Manhattan Distance: %d", x, y, x+y)
+	val := findMax(in, grid)
+	fmt.Printf("\nProblem Two result: %d\n", val)
 }
 
-func find(input int, grid map[string]int) (int, int) {
-	for coords, val := range grid {
-		if val == input {
-			crds := strings.Split(coords, ", ")
-			x, _ := strconv.Atoi(crds[0])
-			y, _ := strconv.Atoi(crds[1])
-
-			xI := int(math.Abs(float64(x)))
-			yI := int(math.Abs(float64(y)))
-			return xI, yI
+func findMax(input int, grid map[string]int) int {
+	for _, val := range grid {
+		fmt.Println(val)
+		if val > input {
+			return val
 		}
 	}
 
-	return 0, 0
+	return 0
 }
 
 func buildGrid(maxVal int) map[string]int {
@@ -42,38 +35,43 @@ func buildGrid(maxVal int) map[string]int {
 
 	set(x, y, val)
 
-	for val <= maxVal {
+	searching := true
+	for searching {
+
 		// X
 		for i := 1; i <= sidelength; i++ {
 			x += dir
 			val = calculatePoint(x, y, grid)
+			set(x, y, val)
 
 			// Lazy..
 			if val > maxVal {
-				fmt.Printf("Found %d", val)
-				os.Exit(0)
+				searching = false
+				break
 			}
 
-			set(x, y, val)
+		}
+
+		if (!searching) {
+			break
 		}
 
 		// Y
 		for i := 1; i <= sidelength; i++ {
 			y += dir
 			val = calculatePoint(x, y, grid)
+			set(x, y, val)
 
 			// Lazy..
 			if val > maxVal {
-				fmt.Printf("Found %d", val)
-				os.Exit(0)
+				searching = false
+				break
 			}
 
-			set(x, y, val)
 		}
 
 		sidelength += 1
-		x *= -1
-		y *= -1
+		dir *= -1
 	}
 
 	return grid
