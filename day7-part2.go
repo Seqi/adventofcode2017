@@ -13,35 +13,7 @@ func main() {
 	inputs = ParseInput()
 	bottomProgram := getBottomProgram()
 
-	//weights := make([]int, len(bottomProgram.programs))
-
 	findFirstEqualTower(bottomProgram)
-
-	// for i, p := range bottomProgram.programs {
-	//   program := getProgram(p, inputs)
-	//   weight := calculateWeight(program, inputs)
-	//
-	//   weights[i] = weight
-	// }
-
-	// fmt.Println("Base: ", bottomProgram)
-	// fmt.Println("Weights: ", weights)
-	//
-	// // Get the anomaly
-	// diff := weights[0]
-	// for _, weight := range weights {
-	//   if (diff - weight != 0) {
-	//     diff = diff - weight
-	//     break
-	//   }
-	// }
-	//
-	// // Correct sign
-	// if diff < 0 {
-	//   diff *= -1
-	// }
-	//
-	// fmt.Println("Problem Two result: ", diff)
 }
 
 func findFirstEqualTower(program Program) {
@@ -88,11 +60,9 @@ func isStackEven(weights []int) bool {
 func calculateWeight(program Program) int {
 	total := program.weight
 
-	if len(program.programs) > 0 {
-		for _, p := range program.programs {
-			next := getProgram(p)
-			total += calculateWeight(next)
-		}
+	for _, p := range program.programs {
+		next := getProgram(p)
+		total += calculateWeight(next)
 	}
 
 	return total
