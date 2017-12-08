@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+// regex = ([a-z]+) \((\d+)\)(?: -> (.+))?
+
 var inputs []Program
 
 func main() {
