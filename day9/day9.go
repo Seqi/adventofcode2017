@@ -11,13 +11,9 @@ const garbageClose string = ">"
 const skip string = "!"
 
 func main() {
-	b, err := ioutil.ReadFile("input.txt")
+	input := readInput()
 
-	if err != nil {
-		fmt.Println("Error reading in input file")
-	}
-
-	score, garbageScore := solve(string(b))
+	score, garbageScore := solve(input)
 
 	fmt.Println("Problem One result", score)
 	fmt.Println("Problem Two result", garbageScore)
@@ -54,4 +50,14 @@ func solve(input string) (int, int) {
 	}
 
 	return score, garbageScore
+}
+
+func readInput() string {
+	b, err := ioutil.ReadFile("input.txt")
+
+	if err != nil {
+		fmt.Println("Error reading in input file")
+	}
+
+	return string(b)
 }

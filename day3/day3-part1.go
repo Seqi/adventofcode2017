@@ -3,20 +3,19 @@ package main
 import (
 	"fmt"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 )
 
-func main() {
-	in, _ := strconv.Atoi(os.Args[1])
+const input int = 325489
 
-	grid := buildGrid(in)
-	x, y := find(in, grid)
+func main() {
+	grid := buildGrid()
+	x, y := find(grid)
 	fmt.Printf("Target found at %d, %d. Manhattan Distance: %d", x, y, x+y)
 }
 
-func find(input int, grid map[string]int) (int, int) {
+func find(grid map[string]int) (int, int) {
 	for coords, val := range grid {
 		if val == input {
 			crds := strings.Split(coords, ", ")
@@ -32,7 +31,7 @@ func find(input int, grid map[string]int) (int, int) {
 	return 0, 0
 }
 
-func buildGrid(maxVal int) map[string]int {
+func buildGrid() map[string]int {
 
 	grid := make(map[string]int, 0)
 	x, y, val, dir, sidelength := 0, 0, 1, 1, 1
@@ -42,7 +41,7 @@ func buildGrid(maxVal int) map[string]int {
 
 	set(x, y, val)
 
-	for val <= maxVal {
+	for val <= input {
 		// X
 		for i := 1; i <= sidelength; i++ {
 			val += 1

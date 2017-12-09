@@ -2,19 +2,18 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 )
 
-func main() {
-	in, _ := strconv.Atoi(os.Args[1])
+const input int = 325489
 
-	grid := buildGrid(in)
-	val := findMax(in, grid)
+func main() {
+	grid := buildGrid()
+	val := findMax(grid)
 	fmt.Printf("\nProblem Two result: %d\n", val)
 }
 
-func findMax(input int, grid map[string]int) int {
+func findMax(grid map[string]int) int {
 	for _, val := range grid {
 		if val > input {
 			return val
@@ -24,7 +23,7 @@ func findMax(input int, grid map[string]int) int {
 	return 0
 }
 
-func buildGrid(maxVal int) map[string]int {
+func buildGrid() map[string]int {
 
 	grid := make(map[string]int, 0)
 	x, y, direction, sidelength, val := 0, 0, 0, 1, 0
@@ -34,7 +33,7 @@ func buildGrid(maxVal int) map[string]int {
 
 	set(x, y, 1)
 
-	for val < maxVal {
+	for val < input {
 
 		isX := true
 		sign := 1
@@ -59,7 +58,7 @@ func buildGrid(maxVal int) map[string]int {
 			val = calculatePoint(x, y, grid)
 			set(x, y, val)
 
-			if val > maxVal {
+			if val > input {
 				break
 			}
 		}
