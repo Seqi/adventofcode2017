@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -15,56 +15,93 @@ func main() {
 	inputs = ParseInput()
 	bottomProgram := getBottomProgram()
 
-	findFirstEqualTower(bottomProgram)
-}
+	r := findChildOfOffendingTower(bottomProgram)
+	offendingTower := getParentProgram(r.name)
 
-func findFirstEqualTower(program Program) {
-
-	if len(program.programs) == 0 {
-		return
-	}
-
-	weights := make([]int, len(program.programs))
-	for i, p := range program.programs {
-		weight := calculateWeight(getProgram(p))
+	// Find the weights of the offending tower
+	weights := make([]int, len(offendingTower.programs))
+	for i, p := range offendingTower.programs {
+		weight := getProgram(p).calculateWeight()
 		weights[i] = weight
 	}
 
-	isStackEven := isStackEven(weights)
+	// Get the diff of the offending tower
+	_, i := isStackEven(weights)
+	badWeight := weights[i]
 
-	fmt.Println("Weights for ", program)
-	fmt.Println("", weights)
-	fmt.Println("Even? ", isStackEven)
-
-	if !isStackEven {
-		for _, p := range program.programs {
-			findFirstEqualTower(getProgram(p))
-		}
+	var goodIdx int
+	if i == 0 {
+		goodIdx = 1
 	} else {
-		fmt.Println("This stack is even!", program)
-		fmt.Println("", weights)
-		os.Exit(0)
+		goodIdx = 0
 	}
 
+	goodWeight := weights[goodIdx]
+	diff := goodWeight - badWeight
+
+	// Add the difference to the offending weight to get what it should be
+	requiredWeight := r.weight + diff
+
+	fmt.Println("Problem Two solution:", requiredWeight)
 }
 
-func isStackEven(weights []int) bool {
-	init := weights[0]
+func findChildOfOffendingTower(program Program) Program {
+
+	// If there's no programs we're at the top of the tower
+	if len(program.programs) == 0 {
+		return Program{}
+	}
+
+	// Calculate the weight of all programs above this one
+	weights := make([]int, len(program.programs))
+	for i, p := range program.programs {
+		weight := getProgram(p).calculateWeight()
+		weights[i] = weight
+	}
+
+	isStackEven, offendingIndex := isStackEven(weights)
+
+	if isStackEven {
+		return program
+	}
+
+	p := getProgram(program.programs[offendingIndex])
+	return findChildOfOffendingTower(p)
+}
+
+func isStackEven(weights []int) (bool, int) {
+	freq := make(map[int]int, 0)
 	for i := 1; i < len(weights); i++ {
-		if weights[i] != init {
-			return false
+		freq[weights[i]] += 1
+	}
+
+	// Find the uneven tower weight
+	isEven := true
+	unevenWeight := -1
+	for key, val := range freq {
+		if val == 1 && len(freq) > 1 {
+			isEven = false
+			unevenWeight = key
 		}
 	}
 
-	return true
+	if !isEven {
+		for i, val := range weights {
+			if val == unevenWeight {
+				return false, i
+			}
+		}
+	}
+
+	return true, -1
 }
 
-func calculateWeight(program Program) int {
+func (program Program) calculateWeight() int {
 	total := program.weight
 
 	for _, p := range program.programs {
 		next := getProgram(p)
-		total += calculateWeight(next)
+		total += next.calculateWeight()
 	}
 
 	return total
@@ -76,6 +113,19 @@ func getProgram(name string) Program {
 		if program.name == name {
 			result = program
 			break
+		}
+	}
+
+	return result
+}
+
+func getParentProgram(name string) Program {
+	var result Program
+	for _, program := range inputs {
+		for _, child := range program.programs {
+			if child == name {
+				return program
+			}
 		}
 	}
 
@@ -111,18 +161,20 @@ func getBottomProgram() Program {
 func ParseInput() []Program {
 	lines := strings.Split(input, "\n")
 	result := make([]Program, len(lines))
+	rgx := regexp.MustCompile("(\\w+) \\((\\d+)\\)(?: -> (.+))?")
 
 	for i, line := range lines {
-		words := strings.Split(line, " ")
-		weight, _ := strconv.Atoi(words[1][1:3])
+		words := rgx.FindStringSubmatch(line)
+
+		weight, _ := strconv.Atoi(words[2])
 
 		program := new(Program)
-		program.name = words[0]
+		program.name = words[1]
 		program.weight = weight
 
 		if len(words) > 2 {
 			// Trim the comma/spaces
-			program.programs = strings.Split(strings.Join(words[3:], ""), ",")
+			program.programs = strings.Split(words[3], ", ")
 		}
 
 		result[i] = *program
