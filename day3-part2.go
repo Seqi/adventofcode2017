@@ -16,7 +16,6 @@ func main() {
 
 func findMax(input int, grid map[string]int) int {
 	for _, val := range grid {
-		fmt.Println(val)
 		if val > input {
 			return val
 		}
@@ -28,50 +27,48 @@ func findMax(input int, grid map[string]int) int {
 func buildGrid(maxVal int) map[string]int {
 
 	grid := make(map[string]int, 0)
-	x, y, val, dir, sidelength := 0, 0, 1, 1, 1
+	x, y, direction, sidelength, val := 0, 0, 0, 1, 0
 	set := func(x int, y int, val int) {
 		grid[strconv.Itoa(x)+", "+strconv.Itoa(y)] = val
 	}
 
-	set(x, y, val)
+	set(x, y, 1)
 
-	searching := true
-	for searching {
+	for val < maxVal {
 
-		// X
+		isX := true
+		sign := 1
+
+		// Calculate axis and direction
+		if direction%2 == 1 {
+			isX = false
+		}
+
+		if direction > 1 {
+			sign *= -1
+		}
+
 		for i := 1; i <= sidelength; i++ {
-			x += dir
+
+			if isX {
+				x += sign
+			} else {
+				y += sign
+			}
+
 			val = calculatePoint(x, y, grid)
 			set(x, y, val)
 
-			// Lazy..
 			if val > maxVal {
-				searching = false
 				break
 			}
-
 		}
 
-		if (!searching) {
-			break
+		if direction%2 == 1 {
+			sidelength += 1
 		}
 
-		// Y
-		for i := 1; i <= sidelength; i++ {
-			y += dir
-			val = calculatePoint(x, y, grid)
-			set(x, y, val)
-
-			// Lazy..
-			if val > maxVal {
-				searching = false
-				break
-			}
-
-		}
-
-		sidelength += 1
-		dir *= -1
+		direction = (direction + 1) % 4
 	}
 
 	return grid
